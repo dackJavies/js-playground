@@ -10,15 +10,39 @@ function performOnClass(name, action) {
 
 window.onload = function () {
 
-/*
-    hide = element => element.style.visibility = "hidden";
-    performOnClass("any-input", hide);
+    // Hover style changes for closed sections
+    addListenerToClass("closed-section", "mouseover", function() {
+        this.style.backgroundColor = "#eeeeee";
+    });
+    addListenerToClass("closed-section", "mouseout", function() {
+        this.style.backgroundColor = "White";
+    });
 
-    function fadeInInputs(element) {
-        
-    }
-*/
-
-    addListenerToClass("any-input", "click", function() { console.log(this.className); });
+    // Animate section opening
+    addListenerToClass("closed-section", "click", function() {
+        var intervalID = setInterval(frame, 5);
+        var sectionElement = this;
+        function frame() {
+            var computedStyle = window.getComputedStyle(sectionElement);
+            var currentHeight = parseInt(computedStyle.height.slice(0, -2), 10);
+            console.log("current height: " + currentHeight);
+            if (currentHeight >= 400) {
+                sectionElement.style.height = 400;
+                clearInterval(intervalID);
+            } else {
+                var increased = currentHeight + 10;
+                sectionElement.style.height = increased.toString();
+            }
+        }
+    });
 
 }
+
+
+
+
+
+
+
+
+

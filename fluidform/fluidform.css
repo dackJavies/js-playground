@@ -23,6 +23,11 @@ body
     margin-top : 10px;
 }
 
+.hidden-item
+{
+    display : none;
+}
+
 .header-1
 {
     font-size : 2.5em;
