@@ -10,7 +10,6 @@ body {
 
 .tile-container {
     text-align : left;
-    outer-width : 100%;
     height : 80%;
 
     border-color : #800040;
@@ -36,6 +35,14 @@ body {
     height : calc(100% / 5);
     display : inline-block;
     margin : 1% 3%;
+    transition: border-color 0.5s;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.tile-slot:hover {
+    border-color: #33ccff;
 }
 
 .tile {
@@ -43,10 +50,11 @@ body {
     width : 100%;
     height : 100%;
     border-radius : 12px;
+    transition: background-color 0.5s
 }
 
 .tile:hover {
-    background-color : #ffad33;
+    background-color : #33ccff; /*#ffad33;*/
 }
 
 .tile:active {
