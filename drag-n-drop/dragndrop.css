@@ -50,7 +50,9 @@ body {
     width : 100%;
     height : 100%;
     border-radius : 12px;
-    transition: background-color 0.5s
+    transition: background-color 0.5s;
+    text-align: center;
+    line-height: 100%;
 }
 
 .tile:hover {
@@ -59,4 +61,12 @@ body {
 
 .tile:active {
     background-color : #e68a00;
+}
+
+.tile p {
+    display: inline-block;
+    margin: 0;
+    font-size: 2em;
+    padding-top: 35%;
+    pointer-events: none;
 }

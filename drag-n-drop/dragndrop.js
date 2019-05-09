@@ -6,13 +6,29 @@ window.addEventListener("load", (e) => {
             let selectedTile = null;
             let homeSlot = null;
             let selectedSlot = null;
+
+            function postDropCleanup() {
+                selectedTile.style.position = "";
+                selectedTile.style.width = "";
+                selectedTile.style.height = "";
+                selectedTile.style.left = "";
+                selectedTile.style.top = "";
+                selectedTile = null;
+                selectedSlot = null;
+                homeSlot = null;
+            }
+
+            function snapToMouse(mouseEvent) {
+                selectedTile.style.left = mouseEvent.clientX + 10;
+                selectedTile.style.top = mouseEvent.clientY + 10;
+            }
+
             container.addEventListener("mousedown", (mouseDownEvent) => {
                 if (mouseDownEvent.button !== 0) {
                     return;
                 }
                 switch(mouseDownEvent.target.className) {
                     case "tile":
-                        console.log("Selected a tile.");
                         selectedTile = mouseDownEvent.target;
                         homeSlot = mouseDownEvent.target.parentNode;
                         let oldWidth = mouseDownEvent.target.offsetWidth;
@@ -21,16 +37,10 @@ window.addEventListener("load", (e) => {
                         selectedTile.style.position = "absolute";
                         selectedTile.style.width = oldWidth;
                         selectedTile.style.height = oldHeight;
-                        selectedTile.style.left = mouseDownEvent.clientX + 10;
-                        selectedTile.style.top = mouseDownEvent.clientY + 10;
-                        break;
-
-                    case "tile-slot":
-                        console.log("Clicked on tile slot.");
+                        snapToMouse(mouseDownEvent);
                         break;
 
                     default:
-                        console.log("Clicked on the container.");
                         break;
                 }
             });
@@ -40,39 +50,29 @@ window.addEventListener("load", (e) => {
                 }
                 switch(mouseUpEvent.target.className) {
                     case "tile":
+                        if (selectedTile) {
+                            let temp = mouseUpEvent.target.parentNode;
+                            homeSlot.appendChild(temp.removeChild(mouseUpEvent.target));
+                            temp.appendChild(container.removeChild(selectedTile));
+                            postDropCleanup();
+                        }
                         break;
 
                     case "tile-slot":
                         if (selectedTile) {
-                            console.log("Dropping selected tile in new slot.");
-                            selectedTile.style.position = "";
-                            selectedTile.style.width = "";
-                            selectedTile.style.height = "";
-                            selectedTile.style.left = "";
-                            selectedTile.style.top = "";
                             if (mouseUpEvent.target === homeSlot) {
                                 homeSlot.appendChild(container.removeChild(selectedTile));
                             } else {
                                 selectedSlot.appendChild(container.removeChild(selectedTile));
                             }
-                            selectedTile = null;
-                            selectedSlot = null;
-                            homeSlot = null;
+                            postDropCleanup();
                         }
                         break;
 
                     default:
                         if (selectedTile) {
-                            console.log("Dropped selected tile.");
-                            selectedTile.style.position = "";
-                            selectedTile.style.width = "";
-                            selectedTile.style.height = "";
-                            selectedTile.style.left = "";
-                            selectedTile.style.top = "";
                             homeSlot.appendChild(container.removeChild(selectedTile));
-                            selectedTile = null;
-                            selectedSlot = null;
-                            homeSlot = null;
+                            postDropCleanup();
                         }
                         break;
                 }
@@ -84,7 +84,6 @@ window.addEventListener("load", (e) => {
                 switch(mouseOverEvent.target.className) {
                     case "tile-slot":
                         if (selectedTile && mouseOverEvent.target !== homeSlot) {
-                            console.log("Selected a slot.");
                             selectedSlot = mouseOverEvent.target;
                         }
                         break;
@@ -111,9 +110,7 @@ window.addEventListener("load", (e) => {
                     return;
                 }
                 if (selectedTile) {
-                    console.log("Attempting to drag.");
-                    selectedTile.style.left = mouseMoveEvent.clientX + 10;
-                    selectedTile.style.top = mouseMoveEvent.clientY + 10;
+                    snapToMouse(mouseMoveEvent);
                 }
             });
         }
