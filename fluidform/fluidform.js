@@ -36,16 +36,22 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     Array.prototype.forEach.call(document.getElementsByClassName("any-input"), (input) => {
+        if (input.className.includes("required")) {
+            input.addEventListener("blur", (blurEvent) => {
+                let completed = Array.prototype.filter.call(
+                    document.getElementsByClassName("required-input"),
+                    (response) => response.value != "" && response.value !== 0
+                ).length;
+
+                document.getElementById("backdrop").style.top =
+                    (100 - (100 * (completed / itemResponses.length))) + "%";
+            });
+        }
         input.addEventListener("blur", (blurEvent) => {
-            let completed = Array.prototype.filter.call(
-                document.getElementsByClassName("any-input"),
-                (response) => response.value != ""
-            ).length;
-
-            console.log(completed);
-
-            document.getElementById("backdrop").style.top =
-                (100 - (100 * (completed / itemResponses.length))) + "%";
-        });
+            blurEvent.target.className = blurEvent.target.className.replace(/completed-input/, "");
+            if (blurEvent.target.value != "" && blurEvent.target.value !== 0) {
+                blurEvent.target.className += " completed-input";
+            }
+        })
     });
 });
