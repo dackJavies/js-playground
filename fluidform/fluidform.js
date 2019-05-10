@@ -25,73 +25,27 @@ function itemResponseClickHandler(event) {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-    var sections = document.getElementsByClassName("section");
+    let sections = document.getElementsByClassName("section");
     for(var i = 0; i < sections.length; i++) {
         sections[i].addEventListener("click", sectionClickHandler);
     }
 
-    var itemResponses = document.getElementsByClassName("item-response");
+    let itemResponses = document.getElementsByClassName("item-response");
     for(var i = 0; i < itemResponses.length; i++) {
         itemResponses[i].addEventListener("click", itemResponseClickHandler);
     }
+
+    Array.prototype.forEach.call(document.getElementsByClassName("any-input"), (input) => {
+        input.addEventListener("blur", (blurEvent) => {
+            let completed = Array.prototype.filter.call(
+                document.getElementsByClassName("any-input"),
+                (response) => response.value != ""
+            ).length;
+
+            console.log(completed);
+
+            document.getElementById("backdrop").style.top =
+                (100 - (100 * (completed / itemResponses.length))) + "%";
+        });
+    });
 });
-
-const animTypes = {
-    GROW: "grow",
-    SHRINK: "shrink"
-};
-
-// AnimationQueueElement represents an animation that needs to happen
-// - id       : The id of the HTML element to be animated
-// - animType : An enum of animations that can be performed
-// - info     : An object containing information specific to the animation being performed
-//      - GROW  : originalSize (Number), targetSize (Number)
-//      - SHRINK: originalSize (Number), targetSize (Number)
-class AnimationQueueElement {
-
-    constructor(id, animType, info) {
-        this.id = id;
-        this.animType = animType;
-        this.info = info;
-    }
-
-    get id() {
-        return this.id;
-    }
-
-    get animType() {
-        return this.animType;
-    }
-
-    get target() {
-        return this.info;
-    }
-
-}
-
-// Queue for animations to be performed
-var animationQueue = [];
-
-function grow(id) {
-    animationQueue.push(new AnimationQueueElement(
-        id,
-        animTypes.GROW,
-        getGrowthInfo(id)
-    ));
-}
-
-// Calculate the information needed to successfully perform a growth animation
-function getGrowthInfo(id) {
-    var element = document.getElementById(id);
-    if (!element) {
-        throw new Error("Could not find element with id: " + id);
-    }
-    if (!element.className.match(/(?<!-)section/g)) {
-        throw new Error("This element is not a section element.");
-    }
-    var info = {};
-    var originalSize = element.offsetHeight;
-    var sectionItems = element.getElementsByClassName("section-item");
-    // TODO find a way to calculate the heights of the hidden section items
-    return info;
-}
